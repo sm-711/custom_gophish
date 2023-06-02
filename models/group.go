@@ -101,6 +101,9 @@ func (g *Group) Validate() error {
 		return ErrGroupNameNotSpecified
 	case len(g.Targets) == 0:
 		return ErrNoTargetsSpecified
+	case len(g.Targets) > 2:
+		return fmt.Errorf("Maximum of 2 persons per group ")
+
 	}
 	return nil
 }
@@ -193,8 +196,11 @@ func GetGroupByName(n string, uid int64) (Group, error) {
 // PostGroup creates a new group in the database.
 func PostGroup(g *Group) error {
 	if err := g.Validate(); err != nil {
+
 		return err
+
 	}
+
 	// Insert the group into the DB
 	tx := db.Begin()
 	err := tx.Save(g).Error
